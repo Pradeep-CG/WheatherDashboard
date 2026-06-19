@@ -17,6 +17,9 @@ struct WheatherInfo: Identifiable {
     var hl: String
 }
 struct FirstView: View {
+    @State private var searchText: String = ""
+    @State private var isSearchBarFocused: Bool = false
+    
     var whetherData = [
         WheatherInfo(id: 1, cityName: "Giridih", temp: "30", description: "Mostly Clear", icon: "clear", time: "08:05 PM", hl: "H:36°  L:28°"),
         WheatherInfo(id: 2, cityName: "Bangaluru", temp: "25", description: "Isolated Thunderstorms", icon: "thundar", time: "08:05 PM", hl: "H:26°  L:20°"),
@@ -28,45 +31,44 @@ struct FirstView: View {
         WheatherInfo(id: 8, cityName: "Kolkata", temp: "25", description: "Isolated Thunderstorms", icon: "thundar", time: "08:05 PM", hl: "H:26°  L:20°"),
         WheatherInfo(id: 9, cityName: "Keral", temp: "21", description: "Raining", icon: "rain", time: "08:05 PM", hl: "H:24°  L:18°"),
     ]
-    init() {
-
-            let appearance = UINavigationBarAppearance()
-
-            // Inline title color
-
-            appearance.titleTextAttributes = [
-
-                .foregroundColor: UIColor.white
-
-            ]
-
-            // Large title color
-
-            appearance.largeTitleTextAttributes = [
-
-                .foregroundColor: UIColor.white
-
-            ]
-
-            UINavigationBar.appearance().standardAppearance = appearance
-
-            UINavigationBar.appearance().scrollEdgeAppearance = appearance
-
-        }
+    //    init() {
+    //        let appearance = UINavigationBarAppearance()
+    //
+    //        appearance.largeTitleTextAttributes = [
+    //
+    //            .foregroundColor: UIColor.white
+    //
+    //        ]
+    //
+    //        appearance.titleTextAttributes = [
+    //
+    //            .foregroundColor: UIColor.white
+    //
+    //        ]
+    //
+    //        UINavigationBar.appearance().standardAppearance = appearance
+    //
+    //        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+    //
+    //    }
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack(alignment: .top) {
-                Rectangle()
-                    .fill(Color.black)
-                    .opacity(0.8)
-                    .ignoresSafeArea()
                 
-                VStack(spacing: 30){
-                    titleView
+                LinearGradient(
+                    colors: [.black.opacity(0.3), .blue.opacity(0.7)],
+                    startPoint: .bottom,
+                    endPoint: .top
+                )
+                
+                .ignoresSafeArea()
+                
+                VStack(spacing: 10){
+                    // titleView
                     ScrollView(.vertical){
                         
-
+                        
                         VStack(spacing: 100){
                             ForEach(whetherData, id: \.id){ data in
                                 NavigationLink {
@@ -74,13 +76,78 @@ struct FirstView: View {
                                 } label: {
                                     CityView(data: data)
                                 }
-
+                                
                             }
                         }
-                        .padding(.top, 40)
+                        .padding(.top, 30)
                         .padding(.bottom, 20)
                     }
-                 }
+                    .overlay(alignment: .bottom) {
+                        HStack(spacing: 20){
+                            Image(systemName: "magnifyingglass")
+                                .font(.title2)
+                                .foregroundColor(.white)
+                            TextField(
+
+                                "",
+
+                                text: $searchText,
+
+                                prompt: Text("Search for a city")
+
+                                    .foregroundStyle(.white.opacity(0.9))
+
+                            )
+
+                            .foregroundStyle(.white)
+
+                            .font(.title2)
+                                //.foregroundColor(.white)
+                            Spacer()
+                            
+                            Image(systemName: "mic")
+                            
+                                .font(.title2)
+                            
+                                .foregroundStyle(.white)
+                            
+                        }
+                        .padding(.horizontal, 20)
+                        .frame(width: 320, height: 65)
+                        .background(
+                            RoundedRectangle(cornerRadius: 32)
+                                .fill(.blue).opacity(0.6)
+                        )
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 32)
+                                .stroke(Color.black.opacity(0.4), lineWidth: 2)
+                        }
+                        .shadow(color: .blue.opacity(0.2), radius: 8)
+                        //.background(.yellow)
+                    }
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    
+                    Text("Weather")
+                    
+                        .foregroundStyle(.white)
+                    
+                        .font(.largeTitle)
+                        .bold()
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        
+                    } label: {
+                        Image(systemName: "ellipsis")
+                            .font(.title3)
+                            .foregroundColor(.white)
+                            .frame(width: 60, height: 60)
+                    }
+                }
             }
         }
     }
@@ -99,17 +166,17 @@ struct FirstView: View {
             }
             Spacer()
             
-           Image(systemName: "ellipsis.circle")
+            Image(systemName: "ellipsis.circle")
                 .resizable()
                 .frame(width: 30, height: 30)
                 .foregroundStyle(Color.white)
-
+            
             
             //"ellipsis.circle"
         }
         
     }
-
+    
 }
 struct CityView: View {
     var data: WheatherInfo
@@ -121,19 +188,7 @@ struct CityView: View {
                 .resizable()
                 .scaledToFill()
                 .frame(height: 100)
-                //.clipped()
-
-            // A subtle top-to-bottom gradient to improve text contrast
-            LinearGradient(
-                colors: [
-                    Color.black.opacity(0.25),
-                    Color.black.opacity(0.35)
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .allowsHitTesting(false)
-
+            
             // Foreground content
             VStack(alignment: .leading, spacing: 6) {
                 HStack(alignment: .top) {
@@ -141,9 +196,9 @@ struct CityView: View {
                     Text(data.cityName)
                         .font(.system(size: 28, weight: .bold))
                         .foregroundStyle(.white)
-
+                    
                     Spacer()
-
+                    
                     // Right: Temperature
                     HStack(alignment: .firstTextBaseline, spacing: 2) {
                         Text(data.temp)
@@ -154,26 +209,24 @@ struct CityView: View {
                             .foregroundStyle(.white.opacity(0.9))
                     }
                 }
-
+                
                 // My Location • Home row
                 HStack(spacing: 8) {
                     Text(data.time)
-//                    Image(systemName: "house.fill")
-//                    Text("Home")
                 }
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(.white.opacity(0.8))
                 .offset(x: 0, y: -25)
                 Spacer(minLength: 0)
-
+                
                 // Bottom row: Mostly Clear on left, High/Low on right
                 HStack {
                     Text(data.description)
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(.white.opacity(0.85))
-
+                    
                     Spacer()
-
+                    
                     Text(data.hl)
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(.white.opacity(0.85))
@@ -191,7 +244,7 @@ struct CityView: View {
         .shadow(color: .black.opacity(0.25), radius: 12, x: 0, y: 8)
         .padding(.horizontal) // optional: outer padding relative to the screen edges
         .frame(height: 60)
-
+        
     }
 }
 
