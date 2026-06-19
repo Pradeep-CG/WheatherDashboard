@@ -14,7 +14,7 @@ struct WheatherDashboardApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            FirstView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }
