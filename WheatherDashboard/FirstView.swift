@@ -113,7 +113,7 @@ struct FirstView: View {
                             
                         }
                         .padding(.horizontal, 20)
-                        .frame(width: 320, height: 65)
+                        .frame(width: 320, height: 55)
                         .background(
                             RoundedRectangle(cornerRadius: 32)
                                 .fill(.blue).opacity(0.6)
