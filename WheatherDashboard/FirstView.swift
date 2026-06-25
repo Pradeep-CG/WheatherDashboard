@@ -19,6 +19,7 @@ struct WheatherInfo: Identifiable {
 struct FirstView: View {
     @State private var searchText: String = ""
     @State private var isSearchBarFocused: Bool = false
+    @State private var showDetail: Bool = false
     
     var whetherData = [
         WheatherInfo(id: 1, cityName: "Giridih", temp: "30", description: "Mostly Clear", icon: "clear", time: "08:05 PM", hl: "H:36°  L:28°"),
@@ -31,26 +32,7 @@ struct FirstView: View {
         WheatherInfo(id: 8, cityName: "Kolkata", temp: "25", description: "Isolated Thunderstorms", icon: "thundar", time: "08:05 PM", hl: "H:26°  L:20°"),
         WheatherInfo(id: 9, cityName: "Keral", temp: "21", description: "Raining", icon: "rain", time: "08:05 PM", hl: "H:24°  L:18°"),
     ]
-    //    init() {
-    //        let appearance = UINavigationBarAppearance()
-    //
-    //        appearance.largeTitleTextAttributes = [
-    //
-    //            .foregroundColor: UIColor.white
-    //
-    //        ]
-    //
-    //        appearance.titleTextAttributes = [
-    //
-    //            .foregroundColor: UIColor.white
-    //
-    //        ]
-    //
-    //        UINavigationBar.appearance().standardAppearance = appearance
-    //
-    //        UINavigationBar.appearance().scrollEdgeAppearance = appearance
-    //
-    //    }
+
     
     var body: some View {
         NavigationStack {
@@ -70,13 +52,14 @@ struct FirstView: View {
                         
                         
                         VStack(spacing: 100){
-                            ForEach(whetherData, id: \.id){ data in
+                            ForEach(whetherData) { data in
                                 NavigationLink {
                                     CityDetailView(data: data)
                                 } label: {
                                     CityView(data: data)
                                 }
                                 
+
                             }
                         }
                         .padding(.top, 30)
@@ -95,7 +78,7 @@ struct FirstView: View {
 
                                 prompt: Text("Search for a city")
 
-                                    .foregroundStyle(.white.opacity(0.9))
+                                    .foregroundStyle(.gray)
 
                             )
 
@@ -116,13 +99,13 @@ struct FirstView: View {
                         .frame(width: 320, height: 55)
                         .background(
                             RoundedRectangle(cornerRadius: 32)
-                                .fill(.blue).opacity(0.6)
+                                .fill(.white).opacity(0.08)
                         )
                         .overlay {
                             RoundedRectangle(cornerRadius: 32)
-                                .stroke(Color.black.opacity(0.4), lineWidth: 2)
+                                .stroke(Color.blue.opacity(0.4), lineWidth: 2)
                         }
-                        .shadow(color: .blue.opacity(0.2), radius: 8)
+                        .shadow(color: .blue.opacity(0.6), radius: 8)
                         //.background(.yellow)
                     }
                 }
@@ -252,3 +235,4 @@ struct CityView: View {
 #Preview {
     FirstView()
 }
+
